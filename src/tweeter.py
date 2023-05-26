@@ -23,6 +23,9 @@ def client():
 
     return client
 
+# message should be in this format:
+# print(row["Incident Date"] + ": " + row["# Victims Injured"] + " people injured, " + row["# Victims Killed"] + " people killed.")
+
 def tweet(api: tweepy.Client, message: str):
     try:
         api.create_tweet(text=message)
