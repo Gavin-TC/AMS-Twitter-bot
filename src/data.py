@@ -1,8 +1,12 @@
-import main
+import tweeter
 import csv
 
-client = main.client()
+import csvretriever as get_csv
+
+client = tweeter.client()
 
 csv_location = "https://www.gunviolencearchive.org/query/0484b316-f676-44bc-97ed-ecefeabae077/export-csv"
 
 # check for change in a mass shootings database, then tweet.
+
+get_csv.retrieve_csv()
