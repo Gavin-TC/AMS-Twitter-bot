@@ -2,6 +2,7 @@ import requests
 import os
 import time
 import glob
+import shutil
 
 
 from selenium import webdriver
@@ -16,6 +17,10 @@ current_dir = os.getcwd()
 relative_path = 'src\\csvs\\'
 working_directory = os.path.join(current_dir, relative_path)
 directory = "src\\csvs"
+
+chrome_driver_path = os.path.join(current_dir, "src\\chromedriver.exe")
+
+print(chrome_driver_path)
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36'
@@ -64,6 +69,7 @@ def get_new_csv():
 
     # now we need to rename the file.
     os.rename(most_recent_file, download_filename)
+    shutil.move(download_filename, directory)
     
     browser.quit()
 

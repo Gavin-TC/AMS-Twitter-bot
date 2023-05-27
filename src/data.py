@@ -36,11 +36,8 @@ def compare_dates():
         csvreader = csv.DictReader(file)
         for row in csvreader:
             if row["Incident Date"] == today:
+                print("new incident")
                 new_incidents += 1
-
-    print()
-    print(oldest_csv)
-    print(latest_csv)
 
     print(f"{old_incidents} old incidents")
     print(f"{new_incidents} new incidents")
@@ -48,33 +45,33 @@ def compare_dates():
     difference = new_incidents - old_incidents
 
     # if we have any incidents today, begin checks.
-    if old_incidents > 0:
-        # if there is a positive difference in incidents, continue
-        if difference > 0:
-            # now we need to read the oldest of the latest incident.
-            # i.e. 1 at 3pm, 1 at 4pm. read the one at 3pm first, then 4pm.
-            with open(latest_csv, 'r') as file:
-                csvreader = csv.DictReader(file)
-                mass_shootings = []
+    # if old_incidents >= 0:
+    # if there is a positive difference in incidents, continue
+    if difference > 0:
+        # now we need to read the oldest of the latest incident.
+        # i.e. 1 at 3pm, 1 at 4pm. read the one at 3pm first, then 4pm.
+        with open(latest_csv, 'r') as file:
+            csvreader = csv.DictReader(file)
+            mass_shootings = []
 
-                for row in csvreader:
-                    if row["Incident Date"] == today:
-                        city = row["City Or County"]
-                        state = row["State"]
-                        injured = row["# Victims Injured"]
-                        killed = row["# Victims Killed"]
-                        mass_shootings.append({"city": city, "state": state, "injured": injured, "killed": killed})
+            for row in csvreader:
+                if row["Incident Date"] == today:
+                    city = row["City Or County"]
+                    state = row["State"]
+                    injured = row["# Victims Injured"]
+                    killed = row["# Victims Killed"]
+                    mass_shootings.append({"city": city, "state": state, "injured": injured, "killed": killed})
 
-                num_to_print = min(difference, len(mass_shootings))
-                for i in range(num_to_print):
-                    shooting = mass_shootings[i]
-                    city = shooting["city"]
-                    state = shooting["state"]
-                    injured = shooting["injured"]
-                    killed = shooting["killed"]
-                    total_shootings_today = len(mass_shootings)
+            num_to_print = min(difference, len(mass_shootings))
+            for i in range(num_to_print):
+                shooting = mass_shootings[i]
+                city = shooting["city"]
+                state = shooting["state"]
+                injured = shooting["injured"]
+                killed = shooting["killed"]
+                total_shootings_today = len(mass_shootings)
 
-                    tweeter.tweet(client, f"""
+                tweeter.tweet(client, f"""
 A mass shooting has occurred today in {city}, {state}.
 
 {injured} people were injured.
