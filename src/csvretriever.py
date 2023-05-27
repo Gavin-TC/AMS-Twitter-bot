@@ -1,6 +1,7 @@
 import requests
 import os
 import time
+import glob
 
 
 from selenium import webdriver
@@ -25,10 +26,6 @@ def get_new_csv():
     export_button_xpath = "//a[@href='/query/0484b316-f676-44bc-97ed-ecefeabae077/export-csv']"
     download_button_xpath = "//a[@class='button big']"
 
-    now = datetime.now()
-    dt_string = now.strftime("%d_%H-%M-%S")
-    download_filename = "mass_shootings_" + dt_string + ".csv"
-
     chrome_options = Options()
     chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--headless")  # Run Chrome in headless mode
@@ -37,9 +34,9 @@ def get_new_csv():
     prefs = {
     "download.default_directory": working_directory,
     "download.prompt_for_download": False,
-    "download.directory_upgrade": True
-    # "download.default_filename": download_filename
+    "download.directory_upgrade": True,
     }
+
     chrome_options.add_experimental_option("prefs", prefs)
 
     browser = webdriver.Chrome(options=chrome_options)
@@ -56,6 +53,18 @@ def get_new_csv():
 
     print("CSV downloaded.")
 
+    # get the time that the file was downloaded
+    now = datetime.now()
+    dt_string = now.strftime("%d_%H-%M-%S")
+    download_filename = "mass_shootings_" + dt_string + ".csv"
+
+    files = glob.glob(os.path.join(directory, '*'))
+    files.sort(key=os.path.getmtime, reverse=True)
+    most_recent_file = files[0]
+
+    # now we need to rename the file.
+    os.rename(most_recent_file, download_filename)
+    
     browser.quit()
 
 # def retrieve_csv():

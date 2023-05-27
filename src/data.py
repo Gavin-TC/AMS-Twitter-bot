@@ -14,7 +14,7 @@ def compare_dates():
     get_csv.get_new_csv()
 
     oldest_csv = os.path.join(get_csv.directory, get_csv.return_oldest_csv())
-    latest_csv = os.path.join(get_csv.directory, get_csv.return_oldest_csv())
+    latest_csv = os.path.join(get_csv.directory, get_csv.return_newest_csv())
 
     now = datetime.now()
     today = now.strftime("%B %d, %Y")
@@ -37,36 +37,53 @@ def compare_dates():
         for row in csvreader:
             if row["Incident Date"] == today:
                 new_incidents += 1
-    
+
+    print()
+    print(oldest_csv)
+    print(latest_csv)
+
+    print(f"{old_incidents} old incidents")
+    print(f"{new_incidents} new incidents")
+
+    difference = new_incidents - old_incidents
+
+    # if we have any incidents today, begin checks.
     if old_incidents > 0:
-        if new_incidents > old_incidents:
+        # if there is a positive difference in incidents, continue
+        if difference > 0:
+            # now we need to read the oldest of the latest incident.
+            # i.e. 1 at 3pm, 1 at 4pm. read the one at 3pm first, then 4pm.
             with open(latest_csv, 'r') as file:
-                print("Newest csv is " + str(file.name))
                 csvreader = csv.DictReader(file)
+                mass_shootings = []
+
                 for row in csvreader:
                     if row["Incident Date"] == today:
+                        city = row["City Or County"]
                         state = row["State"]
                         injured = row["# Victims Injured"]
-                        killed = row["# Victims Injured"]
-                    num_mass_shootings = sum(1 for row in csvreader)
-            print("There has been a new shooting today.")
-            
-            tweeter.tweet(client, f"""
-A mass shooting has occured in {state}.
+                        killed = row["# Victims Killed"]
+                        mass_shootings.append({"city": city, "state": state, "injured": injured, "killed": killed})
+
+                num_to_print = min(difference, len(mass_shootings))
+                for i in range(num_to_print):
+                    shooting = mass_shootings[i]
+                    city = shooting["city"]
+                    state = shooting["state"]
+                    injured = shooting["injured"]
+                    killed = shooting["killed"]
+                    total_shootings_today = len(mass_shootings)
+
+                    tweeter.tweet(client, f"""
+A mass shooting has occurred today in {city}, {state}.
 
 {injured} people were injured.
 {killed} people were killed.
-
-This makes {num_mass_shootings} mass shootings so far this year.
-            """)
-            
-            print("Incident tweeted.")
-        else:
-            print("There has not been a new shooting today.")
+                        """)
     else:
         print("There has not been any shootings so far today.")
     
     # Remove the oldest CSV effectively making the newest CSV the new oldest.
-    #get_csv.remove_csv(oldest_csv)
     os.remove(oldest_csv)
+    #get_csv.remove_csv(oldest_csv)
 
