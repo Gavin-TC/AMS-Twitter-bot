@@ -11,16 +11,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from datetime import datetime
+import datetime
 
 current_dir = os.getcwd()
-relative_path = 'src\\csvs\\'
+relative_path = 'csvs'
 working_directory = os.path.join(current_dir, relative_path)
-directory = "src\\csvs"
-
-chrome_driver_path = os.path.join(current_dir, "src\\chromedriver.exe")
-
-print(chrome_driver_path)
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36'
@@ -59,48 +54,29 @@ def get_new_csv():
     print("CSV downloaded.")
 
     # get the time that the file was downloaded
-    now = datetime.now()
+    now = datetime.datetime.now()
     dt_string = now.strftime("%d_%H-%M-%S")
     download_filename = "mass_shootings_" + dt_string + ".csv"
 
-    files = glob.glob(os.path.join(directory, '*'))
+    files = glob.glob(os.path.join(working_directory, '*'))
     files.sort(key=os.path.getmtime, reverse=True)
     most_recent_file = files[0]
 
     # now we need to rename the file.
     os.rename(most_recent_file, download_filename)
-    shutil.move(download_filename, directory)
+    shutil.move(download_filename, working_directory)
     
     browser.quit()
-
-# def retrieve_csv():
-#     response = requests.get(download_url, headers=headers)
-
-#     if response.status_code == 200:
-#         now = datetime.now()
-#         dt_string = now.strftime("%d_%H-%M-%S")
-        
-#         file_name = "mass_shootings_" + dt_string
-
-#         file_path = os.path.join(directory, file_name)
-#         with open(file_path, "wb") as file:
-#             file.write(response.content)
-        
-#         print(f"CSV retrieved successfully. ({dt_string})")
-#     else:
-#         print(response.status_code)
-#         print("CSV retrieval unsuccessful.")
-
 
 def data_clear(name=''):
     if not name:
         for filename in os.listdir(directory):
-            filepath = os.path.join(directory, filename)
+            filepath = os.path.join(working_directory, filename)
             os.remove(filepath)
             break
     else:
-        for filename in os.listdir(directory):
-            filepath = os.path.join(directory, name)
+        for filename in os.listdir(working_directory):
+            filepath = os.path.join(working_directory, name)
             os.remove(filepath)
             break
 
@@ -108,13 +84,19 @@ def remove_csv(file):
     pass
 
 def return_oldest_csv():
-    for filename in os.listdir(directory):
+    for filename in os.listdir(working_directory):
         file = filename
+        print(f"Oldest/first file is: {file}")
+    return file
+
+def return_newest_csv():
+    for filename in os.listdir(working_directory):
+        file = filename
+        print(f"Newest/last file is: {file}")
         break
     return file
 
-def return_newest_csv():    
-    for filename in os.listdir(directory):
+def return_list_csv():
+    for filename in os.listdir(working_directory):
         file = filename
-    
-    return file
+        print(f"Current file: {file}")

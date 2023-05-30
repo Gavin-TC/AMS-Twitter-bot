@@ -10,11 +10,10 @@ client = tweeter.client()
 csv_location = "https://www.gunviolencearchive.org/query/0484b316-f676-44bc-97ed-ecefeabae077/export-csv"
 
 def compare_dates():
-    # get_csv.retrieve_csv()
     get_csv.get_new_csv()
 
-    oldest_csv = os.path.join(get_csv.directory, get_csv.return_oldest_csv())
-    latest_csv = os.path.join(get_csv.directory, get_csv.return_newest_csv())
+    oldest_csv = os.path.join(get_csv.working_directory, get_csv.return_oldest_csv())
+    latest_csv = os.path.join(get_csv.working_directory, get_csv.return_newest_csv())
 
     now = datetime.now()
     today = now.strftime("%B %d, %Y")
@@ -27,17 +26,14 @@ def compare_dates():
         print("Oldest csv is " + str(file.name))
         csvreader = csv.DictReader(file)
         for row in csvreader:
-            if row["Incident Date"] == today:
-                old_incidents += 1
+            old_incidents += 1
     
     # Check newest CSV
     with open(latest_csv, 'r') as file:
         print("Newest csv is " + str(file.name))
         csvreader = csv.DictReader(file)
         for row in csvreader:
-            if row["Incident Date"] == today:
-                print("new incident")
-                new_incidents += 1
+           new_incidents += 1
 
     print(f"{old_incidents} old incidents")
     print(f"{new_incidents} new incidents")
@@ -71,7 +67,8 @@ def compare_dates():
                 killed = shooting["killed"]
                 total_shootings_today = len(mass_shootings)
 
-                tweeter.tweet(client, f"""
+                #tweeter.tweet(client, f"""
+                print(f"""
 A mass shooting has occurred today in {city}, {state}.
 
 {injured} people were injured.
