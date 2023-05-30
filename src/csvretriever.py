@@ -14,7 +14,7 @@ import datetime
 from datetime import datetime
 
 current_dir = os.getcwd()
-relative_path = 'src/csvs'
+relative_path = 'csvs'
 working_directory = os.path.join(current_dir, relative_path)
 
 headers = {

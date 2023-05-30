@@ -89,8 +89,7 @@ def make_comparison():
                 injured = new_entry["# Victims Injured"]
                 killed = new_entry["# Victims Killed"]
 
-                #tweeter.tweet(client, f"""
-                print(f"""
+                tweeter.tweet(client, f"""
                     A mass shooting has occurred on {date} in {city}, {state}.
 
                     {injured} people were injured.
