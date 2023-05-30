@@ -38,8 +38,8 @@ def make_comparison():
     
     # essentially, if there's a new shooting
     if dif > 0 or True:
-        # we should look through the last 10 entries and check what is new.
-        check_entries = 10
+        # we should look through the last entries and check what is new.
+        check_entries = 15
                 
         old_entries = []
         new_entries = []
@@ -49,7 +49,7 @@ def make_comparison():
             entries = list(csvreader)
             num_entries = len(entries)
 
-            # Print the newest 10 entries in reverse order
+            # Print the newest entries in reverse order
             num_to_print = min(check_entries, num_entries)
                   
             for i in range(num_to_print-1, -1, -1):
@@ -63,7 +63,7 @@ def make_comparison():
             entries = list(csvreader)
             num_entries = len(entries)
 
-            # Print the newest 10 entries in reverse order
+            # Print the newest entries in reverse order
             num_to_print = min(check_entries, num_entries)
             for i in range(num_to_print-1, -1, -1):
                 row = entries[i]
@@ -90,10 +90,12 @@ def make_comparison():
                 killed = new_entry["# Victims Killed"]
 
                 tweeter.tweet(client, f"""
-                    A mass shooting has occurred on {date} in {city}, {state}.
+A mass shooting occurred on {date} in {city}, {state}.
 
-                    {injured} people were injured.
-                    {killed} people were killed.
+{injured} people were injured.
+{killed} people were killed.
+
+This makes {shootings_on_date} shootings on {date}.
                     """)
                 
                 # wait 5 seconds to make next tweet just incase theres more shootings.
