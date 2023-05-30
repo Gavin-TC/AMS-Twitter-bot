@@ -11,8 +11,11 @@ import csvretriever as ret
 client = tweeter.client()
 csv_location = "https://www.gunviolencearchive.org/query/0484b316-f676-44bc-97ed-ecefeabae077/export-csv"
 
+# TODO: make a tweet at the end of the day summarizing the events.
+# TODO: basically, just tweet the # of injured/killed, # of incidents, maybe more?
+
 def make_comparison():
-    ret.get_new_csv()
+    #ret.get_new_csv()
     directory = ret.working_directory
     
     # put the csvs into variables
@@ -47,6 +50,7 @@ def make_comparison():
         with open(oldest_csv, 'r') as file:
             csvreader = csv.DictReader(file)
             entries = list(csvreader)
+
             num_entries = len(entries)
 
             # Print the newest entries in reverse order
@@ -69,40 +73,69 @@ def make_comparison():
                 row = entries[i]
                 new_entries.append(row)
         
+        go_around = 1
+        old_on_date = 0
+        prev_date = 0
+        
         # lets check if new_entries has an entry that old_entries doesn't (i.e. a new shooting)
-        for new_entry in new_entries:
+        for num, new_entry in enumerate(new_entries):
             new_entry_id = new_entry["Incident ID"]
-            
-            found = True
-            for old_entry in old_entries:
-                old_entry_id = old_entry["Incident ID"]
-                
-                if new_entry_id == old_entry_id:
-                    found = False
-                    break
-            
+
+            found = any(new_entry_id == old_entry["Incident ID"] for old_entry in old_entries)
+
             # if we found a missing entry, we gotta tweet it
-            if found:
+            if not found:
                 date = new_entry["Incident Date"]
                 state = new_entry["State"]
                 city = new_entry["City Or County"]
                 injured = new_entry["# Victims Injured"]
                 killed = new_entry["# Victims Killed"]
+                
+                # if the new entry has a different date, reset the go_around counter
+                if prev_date and prev_date != date:
+                    prev_date = date
+                    go_around = 1
+                
+                # reset old_on_date to 0 or we get massive addition problems
+                old_on_date = 0
+                for row in old_entries:
+                    if row["Incident Date"] == date:
+                        old_on_date += 1
+                        
+                        # current date we're looking at will be previous date soon
+                        prev_date = date
 
-                tweeter.tweet(client, f"""
+                shootings_on_date = old_on_date + go_around
+                
+                # <summary>
+                # to get this value, we need to find the index of the entry.
+                # this way if something gets added from previous days,
+                # it will count how many shootings happened from that day.
+                # and the more i explain this the more i realize that i shouldn't do that.
+                # </summary>
+                shootings_on_year = old_shootings + num
+
+                #tweeter.tweet(client, f"""
+                print(f"""
 A mass shooting occurred on {date} in {city}, {state}.
-
 {injured} people were injured.
 {killed} people were killed.
-
-This makes {shootings_on_date} shootings on {date}.
+This makes {shootings_on_date} shooting(s) on {date}.
                     """)
                 
-                # wait 5 seconds to make next tweet just incase theres more shootings.
+                # Add this to tweets once calculation is actually good
+                # This makes a total of {shootings_on_year} shooting(s) this year)
+                
+                # add 1 every time we go around; effectively how many shootings there were in the day
+                go_around += 1
+                
+                # wait 5 seconds to make next tweet incase theres more to make (don't want api problems).
                 time.sleep(5)
     
     # remove the old file
-    os.remove(oldest_csv)
+    #os.remove(oldest_csv)
+
+make_comparison()
 
 # def compare_dates():
 #     get_csv.get_new_csv()
