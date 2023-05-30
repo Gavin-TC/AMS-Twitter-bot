@@ -115,13 +115,14 @@ def make_comparison():
                 # </summary>
                 shootings_on_year = old_shootings + num
 
-                #tweeter.tweet(client, f"""
-                print(f"""
+                tweeter.tweet(client, f"""
 A mass shooting occurred on {date} in {city}, {state}.
+
 {injured} people were injured.
 {killed} people were killed.
+
 This makes {shootings_on_date} shooting(s) on {date}.
-                    """)
+                """)
                 
                 # Add this to tweets once calculation is actually good
                 # This makes a total of {shootings_on_year} shooting(s) this year)
