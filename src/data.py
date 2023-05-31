@@ -15,7 +15,7 @@ csv_location = "https://www.gunviolencearchive.org/query/0484b316-f676-44bc-97ed
 # TODO: basically, just tweet the # of injured/killed, # of incidents, maybe more?
 
 def make_comparison():
-    ret.get_new_csv()
+    #ret.get_new_csv()
     directory = ret.working_directory
     
     # put the csvs into variables
@@ -77,6 +77,9 @@ def make_comparison():
         old_on_date = 0
         prev_date = 0
         
+        injured_people = ""
+        killed_people = ""
+        
         # lets check if new_entries has an entry that old_entries doesn't (i.e. a new shooting)
         for num, new_entry in enumerate(new_entries):
             new_entry_id = new_entry["Incident ID"]
@@ -90,24 +93,16 @@ def make_comparison():
                 city = new_entry["City Or County"]
                 injured = new_entry["# Victims Injured"]
                 killed = new_entry["# Victims Killed"]
-              
-                injured_people = ""
-                killed_people = ""
 
-                if injured != 1:
-                    injured_people = "people were"
-                else:
+                # simple grammar logic for the final tweet.
+                if int(injured) == 1:
                     injured_people = "person was"
-                    print("else, person was")
-
-                if killed != 1:
-                    killed_people = "people were"
                 else:
+                    injured_people = "people were"
+                if int(killed) == 1:
                     killed_people = "person was"
-                    print("else, person was")
-                
-                print(f"injured people : {injured_people}")
-                print(f"killed people : {killed_people}")
+                else:
+                    killed_people = "people were"
 
                 # if the new entry has a different date, reset the go_around counter
                 if prev_date and prev_date != date:
@@ -133,8 +128,7 @@ def make_comparison():
                 # </summary>
                 shootings_on_year = old_shootings + num
 
-                #tweeter.tweet(client, f"""
-                print(f"""
+                tweeter.tweet(client, f"""
 A mass shooting occurred on {date} in {city}, {state}.
 
 {injured} {injured_people} injured.
@@ -153,6 +147,6 @@ This makes {shootings_on_date} shooting(s) on {date}.
                 time.sleep(5)
     
     # remove the old file
-    os.remove(oldest_csv)
+    #os.remove(oldest_csv)
 
 make_comparison()

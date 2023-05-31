@@ -1,16 +1,15 @@
 import time
-import threading
 import os
-
 import csvretriever
 import data as dt
+from sys import platform
 
 allowed_to_track = True
 
 time_to_sleep = 600  # seconds
 
 working_directory = os.getcwd()
-csv_directory = os.path.join(working_directory, "csvs")
+csv_directory = os.path.join(working_directory, "src/csvs")
 
 def main():
     global allowed_to_track
