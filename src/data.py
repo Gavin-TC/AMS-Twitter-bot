@@ -90,7 +90,25 @@ def make_comparison():
                 city = new_entry["City Or County"]
                 injured = new_entry["# Victims Injured"]
                 killed = new_entry["# Victims Killed"]
+              
+                injured_people = ""
+                killed_people = ""
+
+                if injured != 1:
+                    injured_people = "people were"
+                else:
+                    injured_people = "person was"
+                    print("else, person was")
+
+                if killed != 1:
+                    killed_people = "people were"
+                else:
+                    killed_people = "person was"
+                    print("else, person was")
                 
+                print(f"injured people : {injured_people}")
+                print(f"killed people : {killed_people}")
+
                 # if the new entry has a different date, reset the go_around counter
                 if prev_date and prev_date != date:
                     prev_date = date
@@ -115,11 +133,12 @@ def make_comparison():
                 # </summary>
                 shootings_on_year = old_shootings + num
 
-                tweeter.tweet(client, f"""
+                #tweeter.tweet(client, f"""
+                print(f"""
 A mass shooting occurred on {date} in {city}, {state}.
 
-{injured} people were injured.
-{killed} people were killed.
+{injured} {injured_people} injured.
+{killed} {killed_people} killed.
 
 This makes {shootings_on_date} shooting(s) on {date}.
                 """)
