@@ -14,7 +14,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
 
 current_dir = os.getcwd()
+<<<<<<< Updated upstream
 relative_path = 'src\\csvs\\'
+=======
+relative_path = 'src\csvs'
+>>>>>>> Stashed changes
 working_directory = os.path.join(current_dir, relative_path)
 directory = "src\\csvs"
 

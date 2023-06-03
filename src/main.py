@@ -10,7 +10,12 @@ tracking = True
 
 time_to_sleep = 600  # seconds
 
+<<<<<<< Updated upstream
 csv_directory = "src\\csvs"
+=======
+working_directory = os.getcwd()
+csv_directory = os.path.join(working_directory, "src\csvs")
+>>>>>>> Stashed changes
 
 def main():
     input_thread = threading.Thread(target=check_input)

@@ -1,7 +1,13 @@
 import tweepy
 import json
 
+<<<<<<< Updated upstream
 with open('src\\private\\accesstokens.json') as file:
+=======
+working_directory = os.getcwd()
+
+with open(os.path.join(working_directory, 'src\private\\accesstokens.json')) as file:
+>>>>>>> Stashed changes
     data = json.load(file)
 
 apiKey = data['api-key']

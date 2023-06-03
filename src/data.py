@@ -13,6 +13,7 @@ def compare_dates():
     # get_csv.retrieve_csv()
     get_csv.get_new_csv()
 
+<<<<<<< Updated upstream
     oldest_csv = os.path.join(get_csv.directory, get_csv.return_oldest_csv())
     latest_csv = os.path.join(get_csv.directory, get_csv.return_newest_csv())
 
@@ -21,6 +22,11 @@ def compare_dates():
 
     old_incidents = 0
     new_incidents = 0
+=======
+def make_comparison():
+    ret.get_new_csv()
+    directory = ret.working_directory
+>>>>>>> Stashed changes
     
     # Check oldest CSV
     with open(oldest_csv, 'r') as file:
@@ -80,7 +86,12 @@ A mass shooting has occurred today in {city}, {state}.
     else:
         print("There has not been any shootings so far today.")
     
+<<<<<<< Updated upstream
     # Remove the oldest CSV effectively making the newest CSV the new oldest.
     os.remove(oldest_csv)
     #get_csv.remove_csv(oldest_csv)
+=======
+    # remove the old file
+    os.remove(oldest_csv)
+>>>>>>> Stashed changes
 
