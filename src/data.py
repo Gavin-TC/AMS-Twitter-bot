@@ -12,6 +12,8 @@ csv_location = "https://www.gunviolencearchive.org/query/0484b316-f676-44bc-97ed
 # TODO: basically, just tweet the # of injured/killed, # of incidents, maybe more?
 
 def make_comparison(download, test):
+    print("Data working!")
+    
     if download:
         ret.get_new_csv()
     directory = ret.working_directory

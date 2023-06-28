@@ -30,6 +30,8 @@ def client():
 # print(row["Incident Date"] + ": " + row["# Victims Injured"] + " people injured, " + row["# Victims Killed"] + " people killed.")
 
 def tweet(api: tweepy.Client, message: str):
+    print("Tweeter working!")
+    
     try:
         api.create_tweet(text=message)
         print("Tweeted successfully.")

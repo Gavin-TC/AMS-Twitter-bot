@@ -22,13 +22,15 @@ headers = {
 }
 
 def get_new_csv():
+    print("CSVRetriever working!")
+    
     csv_url = "https://www.gunviolencearchive.org/reports/mass-shooting"
     export_button_xpath = "//a[@href='/query/0484b316-f676-44bc-97ed-ecefeabae077/export-csv']"
     download_button_xpath = "//a[@class='button big']"
 
     chrome_options = Options()
     chrome_options.add_argument("--disable-gpu")
-    #chrome_options.add_argument("--headless=new")  # Run Chrome in headless mode
+    chrome_options.add_argument("--headless=new")  # Run Chrome in headless mode
     chrome_options.add_argument("--no-sandbox")
 
     prefs = {
