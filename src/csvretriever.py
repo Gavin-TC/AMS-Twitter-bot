@@ -1,4 +1,3 @@
-import requests
 import os
 import time
 import glob
@@ -11,23 +10,15 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+import datetime
 from datetime import datetime
 
 current_dir = os.getcwd()
-<<<<<<< Updated upstream
-relative_path = 'src\\csvs\\'
-=======
-relative_path = 'src\csvs'
->>>>>>> Stashed changes
+relative_path = 'src\\csvs'
 working_directory = os.path.join(current_dir, relative_path)
-directory = "src\\csvs"
-
-chrome_driver_path = os.path.join(current_dir, "src\\chromedriver.exe")
-
-print(chrome_driver_path)
 
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.93 Safari/537.36'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.5000.0 Safari/537.36'
 }
 
 def get_new_csv():
@@ -37,7 +28,7 @@ def get_new_csv():
 
     chrome_options = Options()
     chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument("--headless")  # Run Chrome in headless mode
+    #chrome_options.add_argument("--headless=new")  # Run Chrome in headless mode
     chrome_options.add_argument("--no-sandbox")
 
     prefs = {
@@ -64,61 +55,76 @@ def get_new_csv():
 
     # get the time that the file was downloaded
     now = datetime.now()
-    dt_string = now.strftime("%d_%H-%M-%S")
-    download_filename = "mass_shootings_" + dt_string + ".csv"
+    dt_string = now.strftime("%d-%H-%M-%S")
+    download_filename = dt_string + ".csv"
 
-    files = glob.glob(os.path.join(directory, '*'))
+    files = glob.glob(os.path.join(working_directory, '*'))
     files.sort(key=os.path.getmtime, reverse=True)
     most_recent_file = files[0]
 
     # now we need to rename the file.
     os.rename(most_recent_file, download_filename)
-    shutil.move(download_filename, directory)
+    shutil.move(download_filename, working_directory)
     
     browser.quit()
 
-# def retrieve_csv():
-#     response = requests.get(download_url, headers=headers)
-
-#     if response.status_code == 200:
-#         now = datetime.now()
-#         dt_string = now.strftime("%d_%H-%M-%S")
-        
-#         file_name = "mass_shootings_" + dt_string
-
-#         file_path = os.path.join(directory, file_name)
-#         with open(file_path, "wb") as file:
-#             file.write(response.content)
-        
-#         print(f"CSV retrieved successfully. ({dt_string})")
-#     else:
-#         print(response.status_code)
-#         print("CSV retrieval unsuccessful.")
-
-
 def data_clear(name=''):
     if not name:
-        for filename in os.listdir(directory):
-            filepath = os.path.join(directory, filename)
+        for filename in os.listdir(working_directory):
+            filepath = os.path.join(working_directory, filename)
             os.remove(filepath)
             break
     else:
-        for filename in os.listdir(directory):
-            filepath = os.path.join(directory, name)
+        for filename in os.listdir(working_directory):
+            filepath = os.path.join(working_directory, name)
             os.remove(filepath)
             break
 
-def remove_csv(file):
-    pass
+def get_file_timestamp(filename):
+    # Extract the timestamp portion of the file name
+    timestamp_str = filename.split('_')[-1].split('.')[0]
+    
+    # Convert the timestamp string to a datetime object
+    return datetime.strptime(timestamp_str, "%d-%H-%M-%S")
 
 def return_oldest_csv():
-    for filename in os.listdir(directory):
-        file = filename
-        break
-    return file
-
-def return_newest_csv():    
-    for filename in os.listdir(directory):
-        file = filename
+    file_list = os.listdir(working_directory)
     
-    return file
+    # Filter out non-csv files
+    file_list = [file for file in file_list if file.endswith('.csv')]
+    
+    if len(file_list) < 2:
+        return "Insufficient number of files in the directory."
+    
+    oldest_file = file_list[0]
+    oldest_timestamp = get_file_timestamp(oldest_file)
+    
+    for file in file_list[1:]:
+        timestamp = get_file_timestamp(file)
+        
+        if timestamp < oldest_timestamp:
+            oldest_file = file
+            oldest_timestamp = timestamp
+    
+    return oldest_file
+
+def return_newest_csv():
+    file_list = os.listdir(working_directory)
+    
+    # Filter out non-csv files
+    file_list = [file for file in file_list if file.endswith('.csv')]
+    
+    if len(file_list) < 2:
+        return "Insufficient number of files in the directory."
+    
+    newest_file = file_list[0]
+    newest_timestamp = get_file_timestamp(newest_file)
+    
+    for file in file_list[1:]:
+        timestamp = get_file_timestamp(file)
+        
+        if timestamp > newest_timestamp:
+            newest_file = file
+            newest_timestamp = timestamp
+    
+    return newest_file

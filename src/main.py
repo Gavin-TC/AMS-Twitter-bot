@@ -1,47 +1,38 @@
 import time
-import threading
 import os
-
 import csvretriever
 import data as dt
+from sys import platform
 
 allowed_to_track = True
-tracking = True
 
 time_to_sleep = 600  # seconds
 
-<<<<<<< Updated upstream
-csv_directory = "src\\csvs"
-=======
 working_directory = os.getcwd()
-csv_directory = os.path.join(working_directory, "src\csvs")
->>>>>>> Stashed changes
+csv_directory = os.path.join(working_directory, "src\\csvs")
+
+GLOBAL_TEST_BOOL = False
 
 def main():
-    input_thread = threading.Thread(target=check_input)
-    input_thread.start()
-
+    global allowed_to_track
+    
+    current_check = 1
+    
     if len(os.listdir(csv_directory)) == 0:
         print("Adding a csv!")
         csvretriever.get_new_csv()
 
     while allowed_to_track:
-        if tracking:
-            dt.compare_dates()
-            time.sleep(time_to_sleep)
+        if len(os.listdir(csv_directory)) != 2:
+            dt.make_comparison(True, GLOBAL_TEST_BOOL)
         else:
-            pass
-
-def check_input():
-    global allowed_to_track, tracking
-    time.sleep(1)
-    while allowed_to_track:
-        print()
-        user_input = input("Enter 'p' to pause tracking: ")
-
-        # Pause tracking.
-        if user_input == "p":
-            tracking = not tracking
+            dt.make_comparison(False, GLOBAL_TEST_BOOL)
+        
+        print(f"This is check #{current_check}.")
+        
+        time.sleep(time_to_sleep)
+        
+        current_check += 1
 
 if __name__ == '__main__':
     main()
