@@ -4,7 +4,7 @@ import os
 
 working_directory = os.getcwd()
 
-with open(os.path.join(working_directory, 'private/accesstokens.json')) as file:
+with open(os.path.join(working_directory, 'src/private/accesstokens.json')) as file:
     data = json.load(file)
 
 apiKey = data['api-key']
@@ -30,6 +30,8 @@ def client():
 # print(row["Incident Date"] + ": " + row["# Victims Injured"] + " people injured, " + row["# Victims Killed"] + " people killed.")
 
 def tweet(api: tweepy.Client, message: str):
+    print("Tweeter working!")
+    
     try:
         api.create_tweet(text=message)
         print("Tweeted successfully.")
